@@ -1,23 +1,43 @@
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'fatih/vim-go'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-go', { 'do': 'make'}
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'morhetz/gruvbox'
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-surround'
+Plug 'easymotion/vim-easymotion'
+
 Plug 'neomake/neomake'
+Plug 'tpope/vim-fugitive'
+
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-Plug 'junegunn/seoul256.vim'
+
 Plug 'ervandew/supertab'
-Plug 'elixir-lang/vim-elixir'
-Plug 'slashmili/alchemist.vim'
-Plug 'powerman/vim-plugin-AnsiEsc'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'zchee/deoplete-jedi'
+Plug 'scrooloose/nerdcommenter'
+
+Plug 'sheerun/vim-polyglot'
+Plug 'fatih/vim-go'
+
+Plug 'elmcast/elm-vim'
+Plug 'lervag/vimtex'
+Plug 'fs111/pydoc.vim'
 Plug 'joukevandermaas/vim-ember-hbs'
+Plug 'powerman/vim-plugin-AnsiEsc'
+
+Plug 'slashmili/alchemist.vim'
+Plug 'c-brenn/phoenix.vim'
+Plug 'tpope/vim-projectionist'
+
+Plug 'morhetz/gruvbox'
+Plug 'tomasr/molokai'
+Plug 'arcticicestudio/nord-vim'
+Plug 'junegunn/seoul256.vim'
 call plug#end()
 
 " TODO: add lazy-loading to plugins above
-
 "" Backup and swap files
 ""
 set backupdir=~/.local/share/nvim/_backup/    " where to put backup files.
@@ -31,6 +51,8 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 let mapleader="\<SPACE>"
 
 " Search {
+  set hlsearch
+  set incsearch
   set ignorecase          " Make searching case insensitive
   set smartcase           " ... unless the query has capital letters.
   set gdefault            " Use 'g' flag by default with :s/foo/bar/.
@@ -43,18 +65,22 @@ let mapleader="\<SPACE>"
 " }
 
 " Formatting {
+  set encoding=utf-8
   set showcmd
   set showmatch
   set showmode
 
   set cursorline
+  set cursorcolumn
   set number
   set ruler
 
   set expandtab
   set tabstop=2
+  set softtabstop=2
   set shiftwidth=2
 
+  set title
   set noerrorbells
   set modeline
   set esckeys
@@ -132,8 +158,9 @@ let mapleader="\<SPACE>"
   " Colorscheme
   set termguicolors
   set background=dark
-  let g:gruvbox_italic=1
-  colorscheme gruvbox
+  " let g:gruvbox_italic=1
+  let g:nord_italic_comments = 1
+  colorscheme nord
 
   let g:seoul256_background = 235
   " colo seoul256
@@ -163,6 +190,15 @@ let mapleader="\<SPACE>"
   inoremap jj <Esc>
 " }
 
+" Neomake customisation {
+  augroup localneomake
+    autocmd! BufWritePost * Neomake
+  augroup END
+
+  let g:neomake_markdown_enabled_makers = []
+  let g:neomake_elixir_enabled_makers = ['mix', 'credo']
+" }
+
 " CtrlP customisation {
   " Open file menu
   nnoremap <Leader>o :CtrlP<CR>
@@ -176,6 +212,12 @@ let mapleader="\<SPACE>"
   set wildignore+=*/public/lib*
 " }
 
+" NERDCommenter {
+  let g:NERDSpaceDelims = 1
+  nmap <C-_> <leader>c<Space>
+  vmap <C-_> <leader>c<Space>
+" }
+
 " Airline customisation {
   let g:airline#extensions#tabline#enabled = 2
   let g:airline#extensions#tabline#fnamemod = ':t'
@@ -187,7 +229,7 @@ let mapleader="\<SPACE>"
   let g:airline_left_alt_sep = '|'
   let g:airline_right_sep = ' '
   let g:airline_right_alt_sep = '|'
-  let g:airline_theme = 'gruvbox'
+  let g:airline_theme = 'nord'
 " }
 
 " Go config {
@@ -211,6 +253,41 @@ let mapleader="\<SPACE>"
   " autocmd! FileType markdown  GoyoLeavev Limelight!
 " }
 
-" Elxir config {
+" Elixir config {
   au FileType elixir nmap <leader>t :Mix test<CR>
+" }
+
+" Elm config {
+  let g:elm_format_autosave = 1
+
+  " (Assuming settings like the following)
+  let g:deoplete#omni#functions = {}
+  let g:deoplete#sources = {}
+  let g:deoplete#sources._ = ['file', 'neosnippet']
+  let g:deoplete#omni#input_patterns = {}
+
+  let g:deoplete#omni#functions.elm = ['elm#Complete']
+  let g:deoplete#omni#input_patterns.elm = '[^ \t]+'
+  let g:deoplete#sources.elm = ['omni'] + g:deoplete#sources._
+" }
+
+" Rust confg {
+  let g:rustfmt_autosave = 1
+" }
+
+" Python Config {
+  au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+  let g:neomake_python_enabled_makers = ['flake8', 'pep8']
+
+  " E501 is line length of 80 characters
+  let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
+  let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=105'], }
 " }
