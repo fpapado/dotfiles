@@ -4,6 +4,7 @@ Plug 'tpope/vim-surround'
 Plug 'easymotion/vim-easymotion'
 Plug 'dietsche/vim-lastplace'
 Plug 'kassio/neoterm'
+Plug 'janko-m/vim-test'
 
 Plug 'neomake/neomake'
 Plug 'tpope/vim-fugitive'
@@ -221,6 +222,17 @@ let mapleader="\<SPACE>"
   let g:gutentags_cache_dir = '~/.tags_cache'
 " }
 
+" Vim-test customisation {
+  nmap <silent> <leader>t :TestNearest<CR>
+  nmap <silent> <leader>T :TestFile<CR>
+  nmap <silent> <leader>a :TestSuite<CR>
+  nmap <silent> <leader>l :TestLast<CR>
+  nmap <silent> <leader>g :TestVisit<CR>
+
+  " run tests in neoterm
+  let g:test#strategy = 'neoterm'
+" }
+
 " CtrlP customisation {
   " Open file menu
   nnoremap <Leader>o :CtrlP<CR>
@@ -284,7 +296,7 @@ let mapleader="\<SPACE>"
 " }
 
 " Elixir config {
-  au FileType elixir nmap <leader>t :Mix test<CR>
+  " au FileType elixir nmap <leader>t :Mix test<CR>
 " }
 
 " Elm config {
