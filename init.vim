@@ -9,6 +9,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 
@@ -238,6 +239,14 @@ let mapleader="\<SPACE>"
 " }
 
 " Airline customisation {
+  let g:bufferline_echo = 0
+  let g:airline_powerline_fonts=1
+  let g:airline_enable_branch=1
+  let g:airline_enable_syntastic=1
+  let g:airline_branch_prefix = '⎇ '
+  let g:airline_paste_symbol = '∥'
+
+  let g:airline#extensions#tabline#enabled = 2
   let g:airline#extensions#tabline#enabled = 2
   let g:airline#extensions#tabline#fnamemod = ':t'
   let g:airline#extensions#tabline#left_sep = ' '
