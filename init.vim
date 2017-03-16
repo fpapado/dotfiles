@@ -2,6 +2,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'easymotion/vim-easymotion'
+Plug 'dietsche/vim-lastplace'
+Plug 'kassio/neoterm'
 
 Plug 'neomake/neomake'
 Plug 'tpope/vim-fugitive'
