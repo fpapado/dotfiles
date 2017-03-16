@@ -18,10 +18,13 @@ Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'zchee/deoplete-jedi'
 Plug 'scrooloose/nerdcommenter'
 
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'sheerun/vim-polyglot'
-Plug 'fatih/vim-go'
+  let g:polyglot_disabled = ['elm', 'elixir']
 
 Plug 'elmcast/elm-vim'
+Plug 'elixir-lang/vim-elixir'
+Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'fs111/pydoc.vim'
 Plug 'joukevandermaas/vim-ember-hbs'
@@ -37,18 +40,30 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'junegunn/seoul256.vim'
 call plug#end()
 
-" TODO: add lazy-loading to plugins above
 "" Backup and swap files
-""
 set backupdir=~/.local/share/nvim/_backup/    " where to put backup files.
 set directory=~/.local/share/nvim/_temp//      " where to put swap files.
 
-" Use deoplete
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
 " Map the space key to leader
 let mapleader="\<SPACE>"
+
+" Deoplete config {
+  let g:deoplete#enable_at_startup = 1
+
+  let g:deoplete#sources = {}
+  let g:deoplete#sources._ = ['file', 'neosnippet']
+
+  let g:deoplete#omni#functions = {}
+  let g:deoplete#omni#input_patterns = {}
+
+  " Elm stuff
+  let g:deoplete#sources.elm = ['omni'] + g:deoplete#sources._
+  let g:deoplete#omni#functions.elm = ['elm#Complete']
+  let g:deoplete#omni#input_patterns.elm = '[^ \t]+'
+  let g:deoplete#disable_auto_complete = 1
+
+  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" }
 
 " Search {
   set hlsearch
@@ -199,6 +214,10 @@ let mapleader="\<SPACE>"
   let g:neomake_elixir_enabled_makers = ['mix', 'credo']
 " }
 
+" Gutentags customisation {
+  let g:gutentags_cache_dir = '~/.tags_cache'
+" }
+
 " CtrlP customisation {
   " Open file menu
   nnoremap <Leader>o :CtrlP<CR>
@@ -259,16 +278,12 @@ let mapleader="\<SPACE>"
 
 " Elm config {
   let g:elm_format_autosave = 1
-
-  " (Assuming settings like the following)
-  let g:deoplete#omni#functions = {}
-  let g:deoplete#sources = {}
-  let g:deoplete#sources._ = ['file', 'neosnippet']
-  let g:deoplete#omni#input_patterns = {}
-
-  let g:deoplete#omni#functions.elm = ['elm#Complete']
-  let g:deoplete#omni#input_patterns.elm = '[^ \t]+'
-  let g:deoplete#sources.elm = ['omni'] + g:deoplete#sources._
+  let g:elm_detailed_complete = 1
+  let g:elm_syntastic_show_warnings = 1
+  let g:elm_format_fail_silently = 1
+  let g:elm_browser_command = 'open'
+  let g:elm_make_show_warnings = 1
+  let g:elm_setup_keybindings = 1
 " }
 
 " Rust confg {
