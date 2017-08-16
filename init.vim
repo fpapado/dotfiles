@@ -33,6 +33,9 @@ Plug 'lervag/vimtex'
 Plug 'fs111/pydoc.vim'
 Plug 'joukevandermaas/vim-ember-hbs'
 Plug 'powerman/vim-plugin-AnsiEsc'
+Plug 'prettier/vim-prettier', {
+	\ 'do': 'npm install',
+	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql'] }
 
 Plug 'slashmili/alchemist.vim'
 Plug 'c-brenn/phoenix.vim'
@@ -226,7 +229,7 @@ let mapleader="\<SPACE>"
   nmap <silent> <leader>t :TestNearest<CR>
   nmap <silent> <leader>T :TestFile<CR>
   nmap <silent> <leader>a :TestSuite<CR>
-  nmap <silent> <leader>l :TestLast<CR>
+  " nmap <silent> <leader>l :TestLast<CR>
   nmap <silent> <leader>g :TestVisit<CR>
 
   " run tests in neoterm
@@ -296,7 +299,7 @@ let mapleader="\<SPACE>"
 " }
 
 " Elixir config {
-  " au FileType elixir nmap <leader>t :Mix test<CR>
+  au FileType elixir nmap <leader>t :Mix test<CR>
 " }
 
 " Elm config {
@@ -309,23 +312,38 @@ let mapleader="\<SPACE>"
   let g:elm_setup_keybindings = 1
 " }
 
+" JS config {
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
+
+  " Reset vim-prettier to prettier defaults
+  " put > on the last line instead of new line
+  let g:prettier#config#jsx_bracket_same_line = 'false'
+
+  " none|es5|all
+  let g:prettier#config#trailing_comma = 'none'
+
+  " flow|babylon|typescript|postcss|json|graphql
+  let g:prettier#config#parser = 'babylon'
+" }
+
 " Rust confg {
   let g:rustfmt_autosave = 1
 " }
 
 " Python Config {
-  au BufNewFile,BufRead *.py
-    \ set tabstop=4
-    \ set softtabstop=4
-    \ set shiftwidth=4
-    \ set textwidth=79
-    \ set expandtab
-    \ set autoindent
-    \ set fileformat=unix
+  " au BufNewFile,BufRead *.py
+    " \ set tabstop=4
+    " \ set softtabstop=4
+    " \ set shiftwidth=4
+    " \ set textwidth=79
+    " \ set expandtab
+    " \ set autoindent
+    " \ set fileformat=unix
 
-  let g:neomake_python_enabled_makers = ['flake8', 'pep8']
+  " let g:neomake_python_enabled_makers = ['flake8', 'pep8']
 
-  " E501 is line length of 80 characters
-  let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
-  let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=105'], }
+  " " E501 is line length of 80 characters
+  " let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
+  " let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=105'], }
 " }
