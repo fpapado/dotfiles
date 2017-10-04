@@ -17,7 +17,8 @@ vim-plug install
 https://github.com/arcticicestudio/nord-gnome-terminal
 inconsolata-dz from https://github.com/powerline/fonts.git
 arc-theme
-Terminal profile
+Terminal profile (nord)
+Hack font
 
 ## Dev
 nodejs
@@ -25,5 +26,5 @@ yarn
 firefox-dev-edtion via ubuntu make
 asdf package manager
 
-## Shortcuts 
+## Shortcuts
 Ctrl+Alt+E larger terminal, centered (automatically?)

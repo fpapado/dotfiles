@@ -45,11 +45,18 @@ Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
 Plug 'arcticicestudio/nord-vim'
 Plug 'junegunn/seoul256.vim'
+Plug 'mhartington/oceanic-next'
 call plug#end()
 
 "" Backup and swap files
 set backupdir=~/.local/share/nvim/_backup/    " where to put backup files.
-set directory=~/.local/share/nvim/_temp//      " where to put swap files.
+set directory=~/.local/share/nvim/_temp/      " where to put swap files.
+
+" Disable safe write (helps with watching files)
+set backupcopy=yes
+
+" Load a buffer in a window that currently has a modified buffer.
+set hidden
 
 " Map the space key to leader
 let mapleader="\<SPACE>"
@@ -105,7 +112,7 @@ let mapleader="\<SPACE>"
   set title
   set noerrorbells
   set modeline
-  set esckeys
+  " set esckeys
 
   " More natural splits
   set splitbelow
@@ -178,15 +185,32 @@ let mapleader="\<SPACE>"
 
 " UI Options {
   " Colorscheme
-  set termguicolors
-  set background=dark
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+
+  " Themes and customisations
+  " General
+  " set background=dark
+
+  " Oceanic Next
+  let g:oceanic_next_terminal_bold = 1
+  let g:oceanic_next_terminal_italic = 1
+  let g:airline_theme='oceanicnext'
+  colorscheme OceanicNext
+
+  " Nord
+  " let g:nord_italic_comments = 1
+  " let g:airline_theme = 'nord'
+  " colorscheme nord
+
+  " Gruvbox
   " let g:gruvbox_italic=1
-  let g:nord_italic_comments = 1
-  colorscheme nord
+  " colorscheme gruvbox
 
-  let g:seoul256_background = 235
-  " colo seoul256
-
+  " Seoul256
+  " let g:seoul256_background = 235
+  " colorscheme seoul256
   " Also highlight all tabs and trailing whitespace characters.
   " highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
   " match ExtraWhitespace /\s\+$\|\t/
@@ -274,7 +298,6 @@ let mapleader="\<SPACE>"
   let g:airline_left_alt_sep = '|'
   let g:airline_right_sep = ' '
   let g:airline_right_alt_sep = '|'
-  let g:airline_theme = 'nord'
 " }
 
 " Go config {
@@ -329,21 +352,4 @@ autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
 
 " Rust confg {
   let g:rustfmt_autosave = 1
-" }
-
-" Python Config {
-  " au BufNewFile,BufRead *.py
-    " \ set tabstop=4
-    " \ set softtabstop=4
-    " \ set shiftwidth=4
-    " \ set textwidth=79
-    " \ set expandtab
-    " \ set autoindent
-    " \ set fileformat=unix
-
-  " let g:neomake_python_enabled_makers = ['flake8', 'pep8']
-
-  " " E501 is line length of 80 characters
-  " let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
-  " let g:neomake_python_pep8_maker = { 'args': ['--max-line-length=105'], }
 " }
