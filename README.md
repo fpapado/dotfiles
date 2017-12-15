@@ -12,6 +12,18 @@ oh-my-zsh installation
 
 # Editing
 vim-plug install
+then run :PlugInstall inside nvim
+
+Use Neovim for editor alternatives:
+```
+sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
+sudo update-alternatives --config vi
+sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60
+sudo update-alternatives --config vim
+sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 60
+sudo update-alternatives --config editor
+```
+
 
 ## Visuals
 https://github.com/arcticicestudio/nord-gnome-terminal

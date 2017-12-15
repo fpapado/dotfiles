@@ -1,4 +1,8 @@
 call plug#begin('~/.local/share/nvim/plugged')
+Plug 'vimwiki/vimwiki'
+Plug 'mattn/calendar-vim'
+
+Plug 'bogado/file-line'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'easymotion/vim-easymotion'
@@ -17,15 +21,19 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 
 Plug 'ervandew/supertab'
+Plug 'Shougo/denite.nvim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'zchee/deoplete-jedi'
+Plug 'Shougo/echodoc.vim'
 Plug 'scrooloose/nerdcommenter'
 
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'sheerun/vim-polyglot'
-  let g:polyglot_disabled = ['elm', 'elixir']
+  let g:polyglot_disabled = ['javascript', 'typescript', 'elm', 'elixir']
 
+Plug 'mhartington/nvim-typescript'  " call :UpdateRemotePlugins
+Plug 'HerringtonDarkholme/yats.vim'
 Plug 'elmcast/elm-vim'
 Plug 'elixir-lang/vim-elixir'
 Plug 'fatih/vim-go'
@@ -35,7 +43,7 @@ Plug 'joukevandermaas/vim-ember-hbs'
 Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'prettier/vim-prettier', {
 	\ 'do': 'npm install',
-	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql'] }
+	\ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'graphql'] }
 
 Plug 'slashmili/alchemist.vim'
 Plug 'c-brenn/phoenix.vim'
@@ -61,22 +69,27 @@ set hidden
 " Map the space key to leader
 let mapleader="\<SPACE>"
 
+" Tab
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+
 " Deoplete config {
   let g:deoplete#enable_at_startup = 1
+  let g:deoplete#enable_debug = 1
+  let g:deoplete#enable_profile = 1
+  " call deoplete#enable_logging('DEBUG', 'deoplete.log')
 
-  let g:deoplete#sources = {}
-  let g:deoplete#sources._ = ['file', 'neosnippet']
+  " let g:deoplete#sources = {}
+  " let g:deoplete#sources._ = ['file', 'neosnippet']
 
-  let g:deoplete#omni#functions = {}
-  let g:deoplete#omni#input_patterns = {}
+  " let g:deoplete#omni#functions = {}
+  " let g:deoplete#omni#input_patterns = {}
 
-  " Elm stuff
-  let g:deoplete#sources.elm = ['omni'] + g:deoplete#sources._
-  let g:deoplete#omni#functions.elm = ['elm#Complete']
-  let g:deoplete#omni#input_patterns.elm = '[^ \t]+'
-  let g:deoplete#disable_auto_complete = 1
-
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+  " Elm stuff {
+  " let g:deoplete#sources.elm = ['omni'] + g:deoplete#sources._
+  " let g:deoplete#omni#functions.elm = ['elm#Complete']
+  " let g:deoplete#omni#input_patterns.elm = '[^ \t]+'
+  " Unsure about this
+  " let g:deoplete#disable_auto_complete = 1
 " }
 
 " Search {
@@ -162,14 +175,22 @@ let mapleader="\<SPACE>"
     set t_Co=16
   endif
 
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+
+  " if &term == "screen"
+  " set t_Co=256
+  " endif
+
   " Remove trailing spaces.
   function! TrimWhitespace()
     let l:save = winsaveview()
     %s/\s\+$//e
     call winrestview(l:save)
   endfunction
-  " FIXME: Do not call this on makefile and sv files.
-  autocmd BufWritePre * call TrimWhitespace()
+  " " FIXME: Do not call this on makefile and sv files.
+  " autocmd BufWritePre * call TrimWhitespace()
   nnoremap <leader>W :call TrimWhitespace()<CR>
 
   " Diff options
@@ -185,18 +206,16 @@ let mapleader="\<SPACE>"
 
 " UI Options {
   " Colorscheme
-  if (has("termguicolors"))
-    set termguicolors
-  endif
 
   " Themes and customisations
   " General
-  " set background=dark
 
   " Oceanic Next
   let g:oceanic_next_terminal_bold = 1
   let g:oceanic_next_terminal_italic = 1
   let g:airline_theme='oceanicnext'
+  syntax enable
+  set background=dark
   colorscheme OceanicNext
 
   " Nord
@@ -205,7 +224,7 @@ let mapleader="\<SPACE>"
   " colorscheme nord
 
   " Gruvbox
-  " let g:gruvbox_italic=1
+  let g:gruvbox_italic=1
   " colorscheme gruvbox
 
   " Seoul256
@@ -335,9 +354,15 @@ let mapleader="\<SPACE>"
   let g:elm_setup_keybindings = 1
 " }
 
+" TS onfig {
+  autocmd FileType typescript nnoremap <silent> <buffer> gb :TSDef<CR>
+  let g:nvim_typescript#default_mappings = 1
+  let g:nvim_typescript#type_info_on_hold = 1
+" }
+
 " JS config {
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
+  let g:prettier#autoformat = 0
+  " autocmd BufWritePre *.jsx,*.ts,*.tsx,*.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
 
   " Reset vim-prettier to prettier defaults
   " put > on the last line instead of new line
@@ -347,9 +372,37 @@ autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
   let g:prettier#config#trailing_comma = 'none'
 
   " flow|babylon|typescript|postcss|json|graphql
-  let g:prettier#config#parser = 'babylon'
+  let g:prettier#config#parser = 'typescript'
 " }
 
 " Rust confg {
   let g:rustfmt_autosave = 1
+" }
+"
+" vimwiki {
+" multiple wikis
+" let g:vimwiki_list = [
+                        " \{'path': '~/Documents/VimWiki/personal.wiki'},
+                        " \{'path': '~/Documents/VimWiki/tech.wiki'}
+                " \]
+" Diary shortcut
+au BufRead,BufNewFile *.wiki set filetype=vimwiki
+:autocmd FileType vimwiki map <leader>d :VimwikiMakeDiaryNote<CR>
+
+" Calendar shortcut
+function! ToggleCalendar()
+  execute ":Calendar"
+  if exists("g:calendar_open")
+    if g:calendar_open == 1
+      execute "q"
+      unlet g:calendar_open
+    else
+      g:calendar_open = 1
+    end
+  else
+    let g:calendar_open = 1
+  end
+endfunction
+
+:autocmd FileType vimwiki map <leader>c :call ToggleCalendar()<CR>
 " }
